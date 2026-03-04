@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    border: 1px solid #000;
+    padding: 4px;
+  }
+
+  .center { text-align: center; }
+  .right { text-align: right; }
+  .bold { font-weight: bold; }
+
+  .container {
+    width: 100%;
+    border: 2px solid #000;
+  }
+
+  /* ================= HEADER ================= */
+
+  .header {
+    width: 100%;
+    border-bottom: 2px solid #000;
+  }
+
+  .header-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .header-table td {
+    border: 1px solid #000;
+    padding: 6px;
+    vertical-align: middle;
+  }
+
+  .logo {
+    width: 120px;
+  }
+
+  .title-main {
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .title-sub {
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .code-box {
+    font-size: 11px;
+  }
+
+  .title {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    padding: 8px;
+  }
+
+  .control-header {
+    justify-content: center;
+    font-weight: bold;
+    background: #f2f2f2;
+  }
+
+  .section-title {
+    background: #e6e6e6;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .danger {
+    background: #ffcccc;
+    color: red;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .totals {
+    font-weight: bold;
+    background: #f2f2f2;
+  }
+
+</style>
+</head>
+
+<body>
+<div class="container">
+    <div class="header">
+        <table class="header-table">
+        <tr>
+            <td style="width:20%">
+            <img src="https://difatech.com/images/asset-6-nonr.png" class="logo" />
+            </td>
+
+            <td style="width:60%">
+            <div class="title-main">FINANZAS Y CONTABILIDAD</div>
+            <div class="title-sub">LIQUIDACION DE GASTOS DE VIAJE</div>
+            </td>
+
+            <td style="width:20%" class="code-box">
+            <div><b>Código:</b> {{NEW_CODE}}</div>
+            <div><b>Revisión:</b> 01</div>
+            <div><b>Fecha Rev:</b> {{APROV_DATE}}</div>
+            <div><b>Página:</b> 1 de 1</div>
+            </td>
+        </tr>
+        </table>
+        <table>
+            <tr>
+                <td style="width: 20%;">
+                    <div class="bold">N° DE VIAJE</div>
+                    <div class="bold">CÓDIGO PROYECTO</div>
+                    <div class="bold">NOMBRES Y APELLIDOS</div>
+                    <div class="bold">CODIGO TRABAJADOR</div>
+                    <div class="bold">AREA</div>
+                    <div class="bold">MOTIVO</div>
+                    <div class="bold">LUGAR</div>
+                </td>
+                <td style="width: 60%;">
+                    <div>{{NEW_CODE_DESC}}</div>
+                    <div>{{CENTRO_COSTO}}</div>
+                    <div>{{NOMBRE_COMPLETO}}</div>
+                    <div>{{CODIGO_TRABAJADOR}}</div>
+                    <div>{{AREA_EMPLOY}}</div>
+                    <div>{{PROYECT_NAME}}</div>
+                    <div>{{CLIENT_NAME}} - {{PLANTA_NAME}}</div>
+                </td>
+                <td style="width: 20%;">
+                    <table>
+                      <tr  class="section-title">
+                        <th style="height: 30px; width: 100%;">
+                          FECHA
+                        </th>
+                      </tr>
+               
+                    </table>
+                    <table>
+                        <tr>
+                        <th>
+                          DIA
+                        </th>
+                        <th>
+                          MES
+                        </th>
+                        <th>
+                          AÑO
+                        </th>
+                      </tr>
+                      <tr>
+                        <td>{{TODAY_DAY}}</td>
+                        <td>{{TODAY_MONTH}}</td>
+                        <td>{{TODAY_YEAR}}</td>
+                      </tr>
+                     
+                    </table>
+                    <table>
+                       <tr>
+                        <td style="width: 100%;">DESDE : {{START_MOV}}</td>
+                      </tr>
+                      <tr>
+                        <td style="width: 100%;">HASTA : {{END_MOV}}</td>
+                      </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<table>
+<br>
+<table>
+  <tr class="section-title">
+    <th>N° DOCUMENTO</th>
+    <th>FECHA DEL GASTO</th>
+    <th>DESCRIPCIÓN</th>
+    <th>HOSPEDAJE ALIMENTAC.</th>
+    <th>PASAJE O MOVILIDAD</th>
+    <th>OTROS GASTOS COMPRAS</th>
+    <th>TOTAL GENERAL</th>
+  </tr>
+
+  {{DECLARATION_ROWS}}
+
+  {{MOVILITY_DECLARATION_ROWS}}
+
+  <tr class="totals">
+    <td colspan="3" class="right">TOTALES</td>
+    <td class="right">{{TOTAL_HOSPALIM}}</td>
+    <td class="right">{{TOTAL_MOVILIDAD}}</td>
+    <td class="right">{{TOTAL_OTROS}}</td>
+    <td class="right">{{TOTAL_GENERAL}}</td>
+  </tr>
+
+
+</table>
+
+
+<br><br>
+
+<table>
+  <tr>
+    <td style="width: 70%;">
+      <table>
+        <tr class="section-title">
+          <th style="height: 60px;">CONTROL</th>
+        </tr>
+      </table>
+      <table>
+        <tr>
+          <th style="width: 80%;">CONCEPTO</th>
+          <th style="width: 20%;"> IMPORTE</th>
+        </tr>
+        <tr>
+          <td >Saldo anterior</td>
+          <td class="right">S/ - </td>
+        </tr>
+        <tr>
+          <td>Depósito a cuenta {{DEPOSIT_CODES}}</td>
+          <td class="right">
+            {{TOTAL_DEPOSITS}}
+          </td>
+        </tr>
+          <tr>
+          <td >Total por Liquidar</td>
+          <td class="right">{{TOTAL_LIQUIDAR}}</td>
+        </tr>
+        <tr>
+          <td class="bold">Total gastos</td>
+          <td class="right">{{TOTAL_GENERAL_CONTROL}}</td>
+        </tr>
+        <tr>
+          <td >Saldo a favor / devolución</td>
+          <td class="right bold">{{SALDO_FINAL}}</td>
+        </tr>
+      </table>
+    </td>
+    <td style="width: 30%;">
+      <table>
+        <tr class="section-title">
+          <th>FIRMA SOLICITANTE</th>
+        </tr>
+        <tr>
+          <td style="height: 80px;">
+          </td>
+        </tr>
+      </table>
+      <table>
+        <tr class="section-title">
+          <th style="width: 50%;">REVISADO POR</th>
+          <th style="width: 50%;">APROBADO POR</th>
+        </tr>
+        <tr>
+          <td style="height: 80px;">
+
+          </td>
+          <td style="height: 80px;">
+            
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table>
+  <tr class="section-title">
+    Banco Cta Devolucion/Depósito:  BCP 192-2583875-0-45
+  </tr>
+</table>
+</body>
+</html>
