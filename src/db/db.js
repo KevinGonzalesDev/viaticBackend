@@ -1,15 +1,13 @@
 import pkg from 'pg'
 const { Pool } = pkg
-import dotenv from 'dotenv'
-
-dotenv.config()
+import { env } from '../config/env.js'
 
 export const pool = new Pool({
-    user: process.env.PG_USER || 'postgres',
-    password: process.env.PG_PASSWORD || '00002509',
-    host: process.env.PG_HOST || 'localhost',
-    port: process.env.PG_PORT ? Number(process.env.PG_PORT) : 5432,
-    database: process.env.PG_DATABASE || 'difatech',
+    user: env.PG_USER,
+    password: env.PG_PASSWORD,
+    host: env.PG_HOST,
+    port: env.PG_PORT,
+    database: env.PG_DATABASE,
     max: 10,
 })
 

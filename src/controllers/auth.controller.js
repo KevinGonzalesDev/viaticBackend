@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { UserModel } from '../models/auth.model.js'
+import { env } from '../config/env.js'
 
 export const login = async (req, res) => {
     try {
@@ -28,7 +29,7 @@ export const login = async (req, res) => {
 
         const token = jwt.sign(
             { id: user.id, email: user.email },
-            process.env.JWT_SECRET,
+            env.JWT_SECRET,
             { expiresIn: '8h' }
         )
 
