@@ -5,6 +5,7 @@ export const CompaniesModel = {
     ListAllCompanies: async () => {
         const { rows } = await pool.query(`
         SELECT
+        c.id,
         c.name,
         c.ruc,
         c.address,
@@ -50,8 +51,8 @@ export const CompaniesModel = {
     AddCompany: async data => {
         const { rows } = await pool.query(`
       INSERT INTO public.companies
-      (name, ruc, address, phone, email, created_at, updated_at, created_by, updated_by, status)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8 ,$9, $10)
+      (name, ruc, address, phone, email, created_at, updated_at, created_by, updated_by, status, short_name)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8 ,$9, $10, $11)
       RETURNING *
     `, [
             data.name,
@@ -64,6 +65,7 @@ export const CompaniesModel = {
             data.createdBy,
             data.updatedBy,
             data.status,
+            data.shortName
         ])
 
         return rows[0]
@@ -78,8 +80,9 @@ export const CompaniesModel = {
       phone = $4,
       email = $5,
       updated_at = $6,
-      updated_by = $7
-    WHERE id = $8
+      updated_by = $7,
+      short_name = $8
+    WHERE id = $9
     RETURNING *`
 
         const values = [
@@ -90,6 +93,7 @@ export const CompaniesModel = {
             data.email,
             data.updatedAt,
             data.updatedBy,
+            data.shortName,
             data.companyId
         ]
 

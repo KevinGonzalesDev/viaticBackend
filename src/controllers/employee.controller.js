@@ -5,13 +5,13 @@ import { createEmployee, listEmployees, findEmployeeById, updateEmployeeM, delet
 export const saveEmployee = async (req, res) => {
     try {
         // Si subiste con multer, el path/url quedó en req.file
-        const avatarUrl = req.file ? `/uploads/avatars/${req.file.filename}` : req.body.avatarImg || null
+        const avatar_img = req.file ? `/uploads/avatars/${req.file.filename}` : req.body.avatar_img || null
         console.log(req.body.password);
 
-        const passwordHash = await bcrypt.hash(req.body.password, 10)
+        const password_hash = await bcrypt.hash(req.body.password, 10)
 
         const payload = {
-            avatarImg: avatarUrl,
+            avatar_img,
             first_name: req.body.first_name,
             last_name: req.body.last_name,
             dni: req.body.dni,
@@ -20,7 +20,7 @@ export const saveEmployee = async (req, res) => {
             area: req.body.area,
             phone: req.body.phone,
             email: req.body.email,
-            passwordHash,
+            password_hash,
             active: req.body.active === 'true' || req.body.active === true
         }
 

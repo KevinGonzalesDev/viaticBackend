@@ -11,7 +11,7 @@ export const createEmployee = async (data) => {
   `
 
   const values = [
-    data.avatarImg || null,
+    data.avatar_img || null,
     data.first_name || null,
     data.last_name || null,
     data.dni || null,
