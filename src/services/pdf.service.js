@@ -175,6 +175,24 @@ export const generateViaticliquidationPDF = async (data) => {
     movilityDeclarationRows = ''
   }
 
+  let ddjjDeclarationRows = ''
+
+  if (Number(data.ddjj_ali_amount) > 0 || Number(data.ddjj_mov_amount) > 0) {
+    ddjjDeclarationRows = `
+       <tr>
+      <td></td>
+      <td></td>
+      <td>OTROS- PLANILLA DE DECLARACION JURADA : </td>
+      <td>${data.ddjj_ali_amount}</td>
+      <td>${data.ddjj_mov_amount}</td>
+      <td></td>
+      <td>S/ ${(Number(data.ddjj_mov_amount) + Number(data.ddjj_ali_amount)).toFixed(2)}</td>
+    </tr>
+  `
+  } else {
+    ddjjDeclarationRows = ''
+  }
+
 
   // Generar filas dinámicas
 
@@ -200,6 +218,8 @@ export const generateViaticliquidationPDF = async (data) => {
 
   // sumado de adicionales
   totalMovilidad += Number(data.movility_amount || 0)
+  totalHospAlim += Number(data.ddjj_ali_amount || 0)
+  totalMovilidad += Number(data.ddjj_mov_amount || 0)
 
 
   const depositCodes = data.deposits
@@ -214,6 +234,7 @@ export const generateViaticliquidationPDF = async (data) => {
 
   html = html.replace('{{DECLARATION_ROWS}}', Declarationrows)
   html = html.replace('{{MOVILITY_DECLARATION_ROWS}}', movilityDeclarationRows)
+  html = html.replace('{{DDJJ_DECLARATION_ROWS}}', ddjjDeclarationRows)
   html = html.replace('{{DEPOSIT_CODES}}', depositCodesFormatted)
   html = html.replace('{{TOTAL_DEPOSITS}}', `S/ ${totalDeposits.toFixed(2)}`)
   html = html.replace('{{TOTAL_HOSPALIM}}', `S/ ${totalHospAlim.toFixed(2)}`)
@@ -246,6 +267,11 @@ export const generateViaticMovilityPDF = async (data) => {
 
   let html = fs.readFileSync(templatePath, 'utf8')
 
+  const today = new Date()
+
+  const TODAY_DAY = String(today.getDate()).padStart(2, '0')
+  const TODAY_MONTH = String(today.getMonth() + 1).padStart(2, '0')
+  const TODAY_YEAR = today.getFullYear()
 
   const formatMonthYear = (date) => {
     const d = new Date(date)
@@ -269,6 +295,9 @@ export const generateViaticMovilityPDF = async (data) => {
     .replace('{{ESTADO}}', data.estado)
     .replace('{{START_MOV}}', formatDate(data.start_mov))
     .replace('{{END_MOV}}', formatDate(data.end_mov))
+    .replace('{{TODAY_DAY}}', TODAY_DAY)
+    .replace('{{TODAY_MONTH}}', TODAY_MONTH)
+    .replace('{{TODAY_YEAR}}', TODAY_YEAR)
 
 
 
@@ -308,6 +337,115 @@ export const generateViaticMovilityPDF = async (data) => {
   html = html.replace('{{TOTAL_MOVILIDAD}}', `S/ ${totalMovilidad.toFixed(2)}`)
   html = html.replace('{{TOTAL_OTROS}}', `S/ ${totalOtros.toFixed(2)}`)
   html = html.replace('{{TOTAL_GENERAL}}', `S/ ${(totalMovilidad + totalOtros).toFixed(2)}`)
+
+  const browser = await puppeteer.launch({ headless: "new" })
+  const page = await browser.newPage()
+
+  await page.setContent(html, { waitUntil: 'networkidle0' })
+
+  const pdf = await page.pdf({
+    format: 'A4',
+    printBackground: true
+  })
+
+  await browser.close()
+
+  return pdf
+}
+
+export const generateViaticDDJJPDF = async (data) => {
+
+  const templatePath = path.resolve('src/templates/ddjj-gastos.html')
+
+
+  let html = fs.readFileSync(templatePath, 'utf8')
+
+  const today = new Date()
+  const formatDateLong = (dateString) => {
+    const date = new Date(dateString)
+
+    const day = date.getDate()
+    const year = date.getFullYear()
+
+    const month = new Intl.DateTimeFormat('es-ES', { month: 'long' }).format(date)
+
+    return `${day} de ${month} del ${year}`
+  }
+
+
+  // Reemplazos simples
+  html = html
+    .replace('{{NRO_VIAJE}}', data.nro_viaje)
+    .replace('{{NEW_CODE}}', data.new_code)
+    .replace('{{NOMBRE_COMPLETO}}', data.nombre_completo.toUpperCase())
+    .replace('{{NOMBRE_COMPLETO_MIN}}', data.nombre_completo)
+    .replace('{{CODIGO_TRABAJADOR}}', data.codigo_trabajador)
+    .replace('{{CARGO}}', data.position_emp.toUpperCase())
+    .replace('{{FIRM}}', data.firm_position)
+    .replace('{{DISTRICT}}', data.district_name.toUpperCase())
+    .replace('{{PROVINCE}}', data.province_name.toUpperCase())
+    .replace('{{START_DATE}}', data.start_prov_date ? formatDateLong(data.start_prov_date) : '')
+    .replace('{{END_DATE}}', data.end_prov_date ? formatDateLong(data.end_prov_date) : '')
+    .replace('{{PRESENTATION}}', formatDate(data.presentation_date))
+    .replace('{{TODAY_LONG}}', formatDateLong(today))
+
+
+
+
+
+
+  const alimentacion = data.declarations
+    .filter(d => d.category === 'ALIMENTACION')
+    .map(d => `
+    <tr>
+      <td>${formatDate(d.fecha)}</td>
+      <td>${d.description}</td>
+      <td class="right">S/ ${Number(d.amount).toFixed(2)}</td>
+    </tr>
+  `)
+    .join('')
+
+  const movilidad = data.declarations
+    .filter(d => d.category === 'MOVILIDAD')
+    .map(d => `
+    <tr>
+      <td>${formatDate(d.fecha)}</td>
+      <td>${d.method} - ${d.description}</td>
+      <td>${d.origin || '-'}</td>
+      <td>${d.destiny || '-'}</td>
+      <td class="right">S/ ${Number(d.amount).toFixed(2)}</td>
+    </tr>
+  `)
+    .join('')
+
+  // Generar filas dinámicas
+
+  let totalAlim = 0
+  let totalMov = 0
+
+  data.declarations.forEach(d => {
+    switch (d.category) {
+      case 'MOVILIDAD':
+        totalMov += Number(d.amount)
+        break
+      case 'ALIMENTACION':
+        totalAlim += Number(d.amount)
+        break
+
+      default:
+        totalOtros += Number(d.amount)
+    }
+  })
+
+
+
+
+  html = html.replace('{{ALI_ROWS}}', alimentacion)
+  html = html.replace('{{MOV_ROWS}}', movilidad)
+
+  html = html.replace('{{TOTAL_ALM}}', `S/ ${totalAlim.toFixed(2)}`)
+  html = html.replace('{{TOTAL_MOV}}', `S/ ${totalMov.toFixed(2)}`)
+  html = html.replace('{{TOTAL_GENERAL}}', `S/ ${(totalAlim + totalMov).toFixed(2)}`)
 
   const browser = await puppeteer.launch({ headless: "new" })
   const page = await browser.newPage()

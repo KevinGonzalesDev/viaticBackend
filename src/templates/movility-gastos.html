@@ -139,10 +139,41 @@
                     <div>{{CODIGO_TRABAJADOR}}</div>
                 </td>
                 <td style="width: 20%;">
-                    <div class="bold">FECHA DE PRESENTACIÓN</div> {{PRESENTATION}}
-                    <div class="bold">ESTADO</div> {{ESTADO}}
-                    <div class="bold">FECHA INICIO</div>{{START_MOV}}
-                    <div class="bold">FECHA FIN</div>{{END_MOV}}
+                    <table>
+                      <tr  class="section-title">
+                        <th style="height: 30px; width: 100%;">
+                          FECHA
+                        </th>
+                      </tr>
+               
+                    </table>
+                    <table>
+                        <tr>
+                        <th>
+                          DIA
+                        </th>
+                        <th>
+                          MES
+                        </th>
+                        <th>
+                          AÑO
+                        </th>
+                      </tr>
+                      <tr>
+                        <td>{{TODAY_DAY}}</td>
+                        <td>{{TODAY_MONTH}}</td>
+                        <td>{{TODAY_YEAR}}</td>
+                      </tr>
+                     
+                    </table>
+                    <table>
+                       <tr>
+                        <td style="width: 100%;">DESDE : {{START_MOV}}</td>
+                      </tr>
+                      <tr>
+                        <td style="width: 100%;">HASTA : {{END_MOV}}</td>
+                      </tr>
+                    </table>
                 </td>
             </tr>
         </table>

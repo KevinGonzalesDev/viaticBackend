@@ -28,6 +28,7 @@ export const CompaniesModel = {
             ), '[]')
             FROM bank_accounts b
             WHERE c.id = b.owner_id
+            AND b.owner_type = 'Empresa'
         ) AS bankobject
 
 

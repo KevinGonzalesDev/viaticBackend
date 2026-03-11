@@ -1,12 +1,63 @@
 import { DeclarModel } from '../models/decViatic.model.js'
-import { generateViaticPDF, generateViaticliquidationPDF, generateViaticMovilityPDF } from '../services/pdf.service.js'
+import { generateViaticPDF, generateViaticliquidationPDF, generateViaticMovilityPDF, generateViaticDDJJPDF } from '../services/pdf.service.js'
 
 export const listDecviaticsbyUs = async (req, res) => {
     try {
-        const { userId } = req.params;
+        const filters = {
+            startDate: req.query.startDate || null,
+            endDate: req.query.endDate || null,
+            status: req.query.status || ['APROB_TESO', 'APROB_DEC_ADM'],
+            userId: req.query.userId || null,
+        }
 
-        const viatics = await DeclarModel.ListDeclarUs(userId)
+        const viatics = await DeclarModel.ListDeclarUs(filters)
         res.json({ ok: true, data: viatics })
+    } catch (err) {
+        res.status(500).json({ ok: false, error: err.message })
+    }
+}
+
+export const listDecviaticsAdm = async (req, res) => {
+    try {
+        const filters = {
+            startDate: req.query.startDate || null,
+            endDate: req.query.endDate || null,
+            status: req.query.status || ['APROB_TESO', 'APROB_DEC_ADM'],
+            userId: req.query.userId || null,
+        }
+
+        console.log(filters, 'filters en el controller');
+
+
+        const data = await DeclarModel.ListDeclarAdm(filters)
+
+        res.json({ ok: true, data })
+    } catch (error) {
+        res.status(500).json({ ok: false, error: error.message })
+    }
+}
+
+export const desactivateDeclar = async (req, res) => {
+    try {
+        const { id } = req.params
+        const { active } = req.body
+
+        const desactivated = await DeclarModel.DesactivateDeclar(id, active)
+
+        res.json({ ok: true, data: desactivated })
+    } catch (err) {
+        res.status(500).json({ ok: false, error: err.message })
+    }
+}
+
+export const updateViaticStatus = async (req, res) => {
+    try {
+        const { viaticId } = req.params
+        const { status } = req.body
+
+        const updatedViatic = await DeclarModel.updateStatus(viaticId, status)
+
+        res.json({ ok: true, data: updatedViatic })
     } catch (err) {
         res.status(500).json({ ok: false, error: err.message })
     }
@@ -284,6 +335,33 @@ export const getViaticMovilityPDF = async (req, res) => {
         res.set({
             'Content-Type': 'application/pdf',
             'Content-Disposition': `inline; filename=movilidad-${viaticId}.pdf`,
+            'Content-Length': pdfBuffer.length
+        })
+
+        res.send(pdfBuffer)
+
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}
+
+export const getViaticDDJJPDF = async (req, res) => {
+    try {
+
+        const { viaticId } = req.params
+
+        // 🔹 1. Consulta principal
+        const viatic = await DeclarModel.getViaticDDJJData(viaticId)
+
+        const data = {
+            ...viatic,
+        }
+
+        const pdfBuffer = await generateViaticDDJJPDF(data)
+
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `inline; filename=ddjj-${viaticId}.pdf`,
             'Content-Length': pdfBuffer.length
         })
 

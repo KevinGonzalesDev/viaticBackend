@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    border: 1px solid #000;
+    padding: 4px;
+  }
+
+  .center { text-align: center; }
+  .right { text-align: right; }
+  .bold { font-weight: bold; }
+
+  .container {
+    width: 100%;
+    border: 2px solid #000;
+  }
+
+  /* ================= HEADER ================= */
+
+  .header {
+    width: 100%;
+    border-bottom: 2px solid #000;
+  }
+
+  .header-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .header-table td {
+    border: 1px solid #000;
+    padding: 6px;
+    vertical-align: middle;
+  }
+
+  .logo {
+    width: 120px;
+  }
+
+  .title-main {
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .title-sub {
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .code-box {
+    font-size: 11px;
+  }
+
+  .title {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    padding: 8px;
+  }
+
+  .control-header {
+    justify-content: center;
+    font-weight: bold;
+    background: #f2f2f2;
+  }
+
+  .section-title {
+    background: #e6e6e6;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .danger {
+    background: #ffcccc;
+    color: red;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .totals {
+    font-weight: bold;
+    background: #f2f2f2;
+  }
+
+</style>
+</head>
+
+<body>
+<div class="container">
+    <div class="header">
+        <table class="header-table">
+        <tr>
+            <td style="width:20%">
+            <img src="https://difatech.com/images/asset-6-nonr.png" class="logo" />
+            </td>
+
+            <td style="width:60%">
+            <div class="title-main">FINANZAS Y CONTABILIDAD</div>
+            <div class="title-sub">DECLARACION JURADA PARA SUSTENTAR GASTOS 
+POR VIAJE AL INTERIOR DEL PAIS</div>
+            </td>
+
+            <td style="width:20%" class="code-box">
+            <div><b>Código:</b> {{NEW_CODE}}</div>
+            <div><b>Revisión:</b> 01</div>
+            <div><b>Fecha Rev:</b> {{PRESENTATION}}</div>
+            <div><b>Página:</b> 1 de 1</div>
+            </td>
+        </tr>
+        </table>
+        <table>
+            <tr>
+                <td style="width: 100%;">
+                    Yo {{NOMBRE_COMPLETO}} 
+                    identificado con DNI {{CODIGO_TRABAJADOR}}
+                     y prestando servicios como {{CARGO}}
+                      en aplicación del art. N° 3 del ","D.S.  N° 007-2013-EF  que regula el otorgamiento de viaticos para viajes en comision en  
+                      el territorio nacional;  
+                      declaro bajo juramento haber realizado el viaje a la provincia de {{PROVINCE}}, 
+                      distrito de {{DISTRICT}}, 
+                      durante el periodo comprendido desde el {{START_DATE}} 
+                      al {{END_DATE}}.  
+                      Incurriendo en los gastos que se detallan a continuación, los cuales no han podido ser sustentados con documentos emitidos por el prestador del servicio:
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 100%;">
+                    N° DECLARACION : {{NRO_VIAJE}}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<table>
+<br>
+<table>
+        <tr class="section-title">
+          <th style="height: 30px;">GASTOS DE ALIMENTACION</th>
+        </tr>
+</table>
+<table>
+  <tr class="section-title">
+    <th style="width: 10%;">FECHA</th>
+    <th style="width: 80%;">DESCRIPCIÓN</th>
+    <th style="width: 10%;">MONTO GASTADO IMPORTE</th>
+  </tr>
+
+  {{ALI_ROWS}}
+
+
+  <tr class="totals">
+    <td colspan="2" class="right">TOTAL GASTOS DE ALIMENTACION</td>
+    <td class="right">{{TOTAL_ALM}}</td>
+  </tr>
+
+
+</table>
+
+
+<br><br>
+<table>
+        <tr class="section-title">
+          <th style="height: 30px;">GASTOS DE MOVILIDAD</th>
+        </tr>
+</table>
+<table>
+  <tr class="section-title">
+    <th style="width: 10%;">FECHA</th>
+    <th style="width: 60%;">MOTIVO DEL DESPLAZAMIENTO</th>
+    <th style="width: 10%;">DE:</th>
+    <th style="width: 10%;">A:</th>
+    <th style="width: 10%;">MONTO GASTADO IMPORTE</th>
+  </tr>
+
+  {{MOV_ROWS}}
+
+
+  <tr class="totals">
+    <td colspan="4" class="right">TOTAL GASTOS DE MOVILIDAD</td>
+    <td class="right">{{TOTAL_MOV}}</td>
+  </tr>
+
+
+</table>
+<br>
+
+<table>
+        <tr class="section-title">
+          <td>TOTAL GASTOS INCURRIDOS</td>
+          <td>{{TOTAL_GENERAL}}</td>
+        </tr>
+</table>
+<br><br>
+<table>
+  <tr>
+    <td style="width: 70%;">
+        <div style="height:80px; vertical-align:center; text-align:center;">
+            <div>En consecuencia para sustentar estos gastos, suscribo la presente, de conformidad con lo dispuesto 
+                    D.S. N° 007-2013-EF y modificaciones.</div>
+                    <div>{{TODAY_LONG}}</div>
+        </div>
+    </td>
+    <td style="width: 30%;">
+      <table>
+        <tr class="section-title">
+          <th>FIRMA TRABAJADOR</th>
+          <th>FIRMA JEFATURA</th>
+        </tr>
+        <tr>
+        <td style="height:80px; vertical-align:bottom; text-align:center; font-size:8px;">
+            <div>{{NOMBRE_COMPLETO_MIN}}</div>
+            <div>{{FIRM}}</div>
+        </td>
+          <td style="height: 80px;">
+            
+          </td>
+        </tr>
+      </table>
+
+    </td>
+  </tr>
+</table>
+<table>
+  <tr class="section-title">
+    Banco Cta Devolucion/Depósito:  BCP 192-2583875-0-45
+  </tr>
+</table>
+</body>
+</html>
